@@ -96,4 +96,23 @@ python run_listener.py <channel_name>
 ```
 
 The <channel_name> is an arbitrary string which specifies the desired channel for subscription.
+The channel_name is case sensitive.
 Don't forget to install all requirements.
+#### Example for Listener
+Run the following command to get data only for the location CELJE
+```
+python run_listener.py CELJE
+```
+Output: only location CELJE
+
+Run the following command to get data for all locations for the date current date
+```
+python run_listener.py DD.MM
+```
+Output: all locations for this specific date
+
+Run the following command to get data for all places which contain the letter CE
+```
+python run_listener.py CE
+```
+Output: CELJE and CERKLJE
