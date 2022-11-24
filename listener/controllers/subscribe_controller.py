@@ -3,6 +3,10 @@ import requests
 import sys
 
 def subscribe_controller(receive_url, receive_port, url, channel):
+    """
+    subscribe_controller function which subscribes the Listener to the specified channel
+    """
+
     full_url = f'{url}/{channel}'
     full_receive_url = f'{receive_url}:{receive_port}/receive/{channel}'
     data = {

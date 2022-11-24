@@ -29,6 +29,9 @@ class PubSub(object):
 
     @staticmethod
     def success_response(msg, data, code = 200, status = 'success'):
+        """
+        Generates a response after successfull handling of request
+        """
         return jsonify({
             'status': status,
             'message': msg,
@@ -38,14 +41,23 @@ class PubSub(object):
 
 
     def add_channel(self, channel):
+        """
+        Adds channel to the PubSub network
+        """
         self.channel_subscribers[channel] = []
 
 
     def delete_channel(self, channel):
+        """
+        Deletes channel from the PubSub network
+        """
         del self.channel_subscribers[channel]
 
 
     def subscribe(self, channel, subscriber_url):
+        """
+        Subscribes user to the PubSub network for a specified channel
+        """
         if channel not in self.channel_subscribers:
             self.add_channel(channel)
         
@@ -57,6 +69,9 @@ class PubSub(object):
 
     
     def unsubscribe(self, channel, subscriber_url):
+        """
+        Unsubscribes user from the PubSub network for the specified channel
+        """
         if channel not in self.channel_subscribers:
             return app_error('This channel does not exist', 400, 'error')
         if subscriber_url not in self.channel_subscribers[channel]:
@@ -70,6 +85,9 @@ class PubSub(object):
 
     
     def unsubscribe_all(self, subscriber_url):
+        """
+        Unsubscribes user from all available channels
+        """
         subscriber_in = []
         for channel in self.channel_subscribers:
             if subscriber_url in self.channel_subscribers[channel]:
@@ -85,12 +103,21 @@ class PubSub(object):
     
 
     def publish_message(self, channel, msg):
+        """
+        Publishes message to the specified channel and each user on the channel
+        It does so by opening a new Thread for each sent message (ThreadPoolExecuter)
+        """
 
         def publish(subscriber, msg, timeout):
+            """
+            Actual function for sending message
+            Make a post request with the requests module
+            """
             time.sleep(random.uniform(0.5, 1.0))
             requests.post(subscriber, json = msg, timeout=timeout)
 
         if channel not in self.channel_subscribers:
+            #Adds new channel if it does not exist yet
             self.add_channel(channel)
 
         with ThreadPoolExecutor(max_workers=5) as executor:
